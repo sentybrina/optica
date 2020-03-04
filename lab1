@@ -1,0 +1,77 @@
+import numpy as np
+from matplotlib import pyplot as plt
+import cmath
+
+
+def func (x):
+    return cmath.exp(1j*x/10)
+
+def kernel (ksi, x, alpha):
+    return 1j*pow(x, alpha*ksi-1)
+
+def func_ksi_l (n, a, b, ksi_l):
+    sum = 0
+    h_x = (b - a) / n
+    for k in range(0, n - 1):
+        x_k = a + k * h_x
+        sum = sum + kernel(ksi_l, x_k, alpha=1) * func(x_k) * h_x
+    return sum
+
+
+def integraltransform(n, m, a, b, p, q):
+    h_ksi = (q - p)/m
+    for l in range(0, m):
+        ksi_l = p + l*h_ksi
+        func_ksi_l(n, a, b, ksi_l)
+    return sum
+
+if __name__ == '__main__':
+    n = 1000
+    m = 1000
+    a = 0
+    b = 5
+    p = 1
+    q = 3
+    #print(integraltransform(n, m, a, b, p, q))
+
+    h_x = (b - a) / n
+    X = np.arange(a, b, h_x)
+    phaza_start = []
+    modul_start = []
+    for z in X:
+        phaza_start.append(cmath.phase(func(z)))
+        modul_start.append(abs(func(z)))
+
+
+    plt.figure(1)
+    plt.plot(X, phaza_start, color="blue", label="фаза исходного сигнала")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    plt.figure(2)
+    plt.plot(X, modul_start, color="blue", label="модуль исходного сигнала")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    h_ksi = (q - p) / m
+    X_result = np.arange(p, q, h_ksi)
+    phaza_result = []
+    module_result = []
+    for l in X_result:
+        ksi_l = p + l * h_ksi
+        phaza_result.append(cmath.phase(func_ksi_l(n, a, b, ksi_l)))
+        module_result.append(abs(func_ksi_l(n, a, b, ksi_l)))
+
+    plt.figure(3)
+    plt.plot(X_result, phaza_result, color="red", label="фаза результирующего сигнала")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    plt.figure(4)
+    plt.plot(X_result, module_result, color="red", label="модуль результирующего сигнала")
+    plt.legend()
+    plt.grid()
+    plt.show()
